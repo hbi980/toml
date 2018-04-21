@@ -413,16 +413,27 @@ def _load_date(val):
                 tz = TomlTz(val[19:25])
     except ValueError:
         tz = None
-    if "-" not in val[1:]:
-        return None
-    try:
-        d = datetime.datetime(
-            int(val[:4]), int(val[5:7]),
-            int(val[8:10]), int(val[11:13]),
-            int(val[14:16]), int(val[17:19]), microsecond, tz)
-    except ValueError:
-        return None
-    return d
+        
+    #if "-" not in val[1:]:
+        #return None
+    if "-" in val[1:]:
+        try:
+            d = datetime.datetime(
+                int(val[:4]), int(val[5:7]),
+                int(val[8:10]), int(val[11:13]),
+                int(val[14:16]), int(val[17:19]), microsecond, tz)
+        except ValueError:
+            return None
+        return d
+    elif ":" in val[1:]:
+        try:
+            d = datetime.time(
+                int(val[:2]),int(val[3:5]), int(val[6:8]))
+        except ValueError:
+            return None
+        return d 
+    else:
+        return None  
 
 
 def _load_unicode_escapes(v, hexbytes, prefix):
